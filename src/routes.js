@@ -9,6 +9,8 @@ const StackNavigator = createStackNavigator({
   SignIn,
   SignUp,
   Main
+},{
+  headerMode:"none"
 })
 
 export default createAppContainer(StackNavigator)
