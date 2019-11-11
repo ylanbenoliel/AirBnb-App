@@ -23,7 +23,15 @@ const Input = styled.TextInput`
   fontSize: 16px; 
 `
 
-const ErrorMessage = styled.TouchableHighlight`
+const ErrorMessage = styled.Text`
+  textAlign: center;
+  color: #CE2029;
+  fontSize: 16px;
+  marginBottom: 15px;
+  marginHorizontal: 20px;
+`;
+
+const Button = styled.TouchableHighlight`
   padding: 20px;
   borderRadius: 5px;
   backgroundColor: #FC6663;
@@ -50,4 +58,4 @@ const SignUpLinkText = styled.Text`
   fontAlign: center;
 `
 
-export { Container, Logo, Input, ErrorMessage, ButtonText, SignUpLink, SignUpLinkText }
+export { Container, Logo, Input, ErrorMessage, Button, ButtonText, SignUpLink, SignUpLinkText }
