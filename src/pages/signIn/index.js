@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StatusBar, AsyncStorage } from 'react-native';
+import { View, Text, StatusBar } from 'react-native';
 import { StackActions, NavigationAction } from 'react-navigation'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import api from '../../services/api'
 
@@ -31,24 +32,25 @@ export default function signIn(props) {
   async function handleSignInPress() {
     if (email.length === 0 || password.length === 0) {
       return setError('Preencha usuário e senha para continuar!')
-    }
-    try {
-      const response = api.post('/sessions', {
-        email,
-        password
-      })
+    } else {
+      try {
+        const response = api.post('/sessions', {
+          email: email,
+          password: password
+        })
 
-      await AsyncStorage.setItem('@AirBnbApp:token', response.data.token)
+        await AsyncStorage.setItem('@AirBnbApp:token', response.data.token)
 
-      const resetAction = StackActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({ routeName: 'Main' })
-        ]
-      })
-      props.navigation.navigate(resetAction)
-    } catch (error) {
-      setError('Houve um problema com o login, verifique suas credenciais!')
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Main' })
+          ]
+        })
+        props.navigation.navigate(resetAction)
+      } catch (error) {
+        setError('Houve um problema com o login, verifique suas credenciais!')
+      }
     }
   }
 
