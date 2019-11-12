@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StatusBar } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation'
 import AsyncStorage from '@react-native-community/async-storage'
-
 import api from '../../services/api'
-
 import {
   Container,
   Logo,
@@ -31,28 +29,27 @@ export default function signIn(props) {
 
   async function handleSignInPress() {
     if (email.length === 0 || password.length === 0) {
-      setError('Preencha usuário e senha para continuar!');
-    } else {
-      try {
-        const response = await api.post('/sessions', {
-          email: email,
-          password: password,
-        });
-
-        await AsyncStorage.setItem('@AirBnbApp:token', response.data.token);
-
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Main' }),
-          ],
-        });
-        props.navigation.dispatch(resetAction);
-      } catch (_err) {
-        setError('Houve um problema com o login, verifique suas credenciais!');
-      }
+      return setError('Preencha usuário e senha para continuar!');
     }
-  };
+    try {
+      const response = await api.post('/sessions', {
+        email: email,
+        password: password,
+      });
+
+      await AsyncStorage.setItem('@AirBnbApp:token', response.data.token);
+
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'Main' }),
+        ],
+      });
+      props.navigation.dispatch(resetAction);
+    } catch (_err) {
+      setError('Houve um problema com o login, verifique suas credenciais!');
+    }
+  }
 
   return (
     <Container>
@@ -75,7 +72,7 @@ export default function signIn(props) {
         secureTextEntry
       />
       {error.length !== 0 && <ErrorMessage>{error}</ErrorMessage>}
-      <Button onPress={ handleSignInPress}>
+      <Button onPress={handleSignInPress}>
         <ButtonText>Entrar</ButtonText>
       </Button>
       <SignUpLink onPress={() => props.navigation.navigate('SignUp')}>
