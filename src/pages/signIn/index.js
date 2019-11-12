@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StatusBar } from 'react-native';
-import { StackActions, NavigationAction } from 'react-navigation'
+import { StackActions, NavigationActions } from 'react-navigation'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import api from '../../services/api'
@@ -31,28 +31,28 @@ export default function signIn(props) {
 
   async function handleSignInPress() {
     if (email.length === 0 || password.length === 0) {
-      return setError('Preencha usuário e senha para continuar!')
+      setError('Preencha usuário e senha para continuar!');
     } else {
       try {
-        const response = api.post('/sessions', {
+        const response = await api.post('/sessions', {
           email: email,
-          password: password
-        })
+          password: password,
+        });
 
-        await AsyncStorage.setItem('@AirBnbApp:token', response.data.token)
+        await AsyncStorage.setItem('@AirBnbApp:token', response.data.token);
 
         const resetAction = StackActions.reset({
           index: 0,
           actions: [
-            NavigationActions.navigate({ routeName: 'Main' })
-          ]
-        })
-        props.navigation.navigate(resetAction)
-      } catch (error) {
-        setError('Houve um problema com o login, verifique suas credenciais!')
+            NavigationActions.navigate({ routeName: 'Main' }),
+          ],
+        });
+        props.navigation.dispatch(resetAction);
+      } catch (_err) {
+        setError('Houve um problema com o login, verifique suas credenciais!');
       }
     }
-  }
+  };
 
   return (
     <Container>
@@ -75,7 +75,7 @@ export default function signIn(props) {
         secureTextEntry
       />
       {error.length !== 0 && <ErrorMessage>{error}</ErrorMessage>}
-      <Button onPress={handleSignInPress}>
+      <Button onPress={ handleSignInPress}>
         <ButtonText>Entrar</ButtonText>
       </Button>
       <SignUpLink onPress={() => props.navigation.navigate('SignUp')}>
