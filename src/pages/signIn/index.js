@@ -16,6 +16,7 @@ import {
 } from './styles';
 
 export default function signIn(props) {
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -27,12 +28,28 @@ export default function signIn(props) {
     setPassword(password)
   }
 
-  function handleSignInPress() {
+  async function handleSignInPress() {
+    if (email.length === 0 || password.length === 0) {
+      return setError('Preencha usuário e senha para continuar!')
+    }
+    try {
+      const response = api.post('/sessions', {
+        email,
+        password
+      })
 
-  }
+      await AsyncStorage.setItem('@AirBnbApp:token', response.data.token)
 
-  function handleCreateAccountPress() {
-
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'Main' })
+        ]
+      })
+      props.navigation.navigate(resetAction)
+    } catch (error) {
+      setError('Houve um problema com o login, verifique suas credenciais!')
+    }
   }
 
   return (
@@ -56,10 +73,10 @@ export default function signIn(props) {
         secureTextEntry
       />
       {error.length !== 0 && <ErrorMessage>{error}</ErrorMessage>}
-      <Button onPress={() => handleSignInPress}>
+      <Button onPress={handleSignInPress}>
         <ButtonText>Entrar</ButtonText>
       </Button>
-      <SignUpLink onPress={() => handleCreateAccountPress}>
+      <SignUpLink onPress={() => props.navigation.navigate('SignUp')}>
         <SignUpLinkText>Criar conta grátis</SignUpLinkText>
       </SignUpLink>
     </Container>
